@@ -1,0 +1,72 @@
+key_vote:
+  Name: '&a&nVote Key'
+  Description:
+  - '&7Gives you key for the &aVote Crate&7.'
+  Price: 25
+  Purchase_Cooldown: 86400
+  Priority: 10
+  Inheritance:
+    Rewards: []
+    Price: []
+  Preview:
+    Material: TRIPWIRE_HOOK
+    Amount: 1
+    Enchants:
+      fortune: 1
+    Item_Flags:
+    - '*'
+  Rewards:
+    Commands:
+    - '[CONSOLE] crate givekey %player% vote'
+  Store:
+    Page: 1
+    Slot: 11
+
+key_daily:
+  Name: '&e&nDaily Key'
+  Description:
+  - '&7Gives you key for the &eDaily Crate&7.'
+  Price: 10
+  Purchase_Cooldown: 86400
+  Priority: 10
+  Inheritance:
+    Rewards: []
+    Price: []
+  Preview:
+    Material: TRIPWIRE_HOOK
+    Amount: 1
+    Enchants:
+      fortune: 1
+    Item_Flags:
+      - '*'
+  Rewards:
+    Commands:
+    - '[CONSOLE] crate givekey %player% daily'
+  Store:
+    Page: 1
+    Slot: 13
+
+key_donor:
+  Name: '&d&nDonor Key'
+  Description:
+  - '&7Gives you key for the &dDonor Crate&7.'
+  Page: 1
+  Price: 5
+  Purchase_Cooldown: 86400
+  Priority: 10
+  Inheritance:
+    Rewards: []
+    Price: []
+  Preview:
+    Material: TRIPWIRE_HOOK
+    Amount: 1
+    Enchants:
+      fortune: 1
+    Item_Flags:
+      - '*'
+  Rewards:
+    Commands:
+    - '[CONSOLE] crate givekey %player% donor'
+  Store:
+    Page: 1
+    Slot: 15

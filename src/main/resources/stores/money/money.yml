@@ -1,0 +1,16 @@
+Name: '&eMoney'
+Permission_Required: false
+Pages: 1
+View:
+  Title: '&lMoney Store'
+  Size: 36
+
+  Content:
+    return:
+      Display:
+        default:
+          Item:
+            Material: BARRIER
+            Name: '&c&lReturn'
+      Type: RETURN
+      Slots: 31

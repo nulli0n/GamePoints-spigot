@@ -1,0 +1,24 @@
+Title: '&lPurchase Confirmation'
+Size: 9
+Product_Slot: 4
+
+Content:
+  c_accept:
+    Display:
+      default:
+        Item:
+          Material: LIME_STAINED_GLASS_PANE
+          Name: '&a&l[Confirm]'
+          Lore:
+            - '&7Price: &a%product_price_inherited% %points_name%'
+    Slots: 5,6,7,8
+    Type: CONFIRMATION_ACCEPT
+
+  c_decline:
+    Display:
+      default:
+        Item:
+          Material: RED_STAINED_GLASS_PANE
+          Name: '&c&l[Decline]'
+    Slots: 0,1,2,3
+    Type: CONFIRMATION_DECLINE

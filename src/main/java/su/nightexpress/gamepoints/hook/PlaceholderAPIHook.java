@@ -93,7 +93,7 @@ public class PlaceholderAPIHook extends AbstractHook<GamePoints> {
                 return type.equalsIgnoreCase("balance") ? String.valueOf(top.getValue()) : top.getKey();
             }
 
-            if (player == null || !plugin.getData().isUserExists(player.getUniqueId().toString(), true)) return null;
+            if (player == null) return null;
 
             PointUser user = plugin.getUserManager().getOrLoadUser(player);
             if (holder.startsWith("item_price")) {

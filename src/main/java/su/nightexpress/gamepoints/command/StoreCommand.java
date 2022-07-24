@@ -8,6 +8,7 @@ import su.nexmedia.engine.utils.PlayerUtil;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.api.store.IPointStore;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
 
@@ -20,13 +21,13 @@ public class StoreCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Store_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_STORE_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Store_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_STORE_USAGE).getLocalized();
     }
 
     @Override
@@ -62,7 +63,7 @@ public class StoreCommand extends AbstractCommand<GamePoints> {
         String storeName = args[1];
         IPointStore store = plugin.getStoreManager().getStore(storeName);
         if (store == null) {
-            plugin.lang().Store_Error_Invalid.send(sender);
+            plugin.getMessage(Lang.STORE_ERROR_INVALID).send(sender);
             return;
         }
 

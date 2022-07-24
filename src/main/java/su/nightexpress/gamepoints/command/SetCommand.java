@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +24,13 @@ public class SetCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Set_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_SET_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Set_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_SET_USAGE).getLocalized();
     }
 
     @Override
@@ -67,14 +68,15 @@ public class SetCommand extends AbstractCommand<GamePoints> {
 
         user.setBalance(amount);
 
-        plugin.lang().Command_Set_Done_Sender.replace(Config.replacePlaceholders())
+        plugin.getMessage(Lang.COMMAND_SET_DONE_SENDER)
+            .replace(Config.replacePlaceholders())
             .replace("%amount%", amount)
             .replace(user.replacePlaceholders())
             .send(sender);
 
         Player player = user.getPlayer();
         if (player != null) {
-            plugin.lang().Command_Set_Done_User
+            plugin.getMessage(Lang.COMMAND_SET_DONE_USER)
                 .replace(Config.replacePlaceholders())
                 .replace("%amount%", amount).
                 send(player);

@@ -97,8 +97,8 @@ public class StoreView extends AbstractMenu<GamePoints> {
         formatProduct = StringUtil.replace(formatProduct, IPointProduct.PLACEHOLDER_DESCRIPTION, false, product.getDescription());
         formatProduct = StringUtil.replace(formatProduct, "%purchase%", false, formatState);
         formatProduct.replaceAll(str -> str
-                .replace(IPointProduct.PLACEHOLDER_COOLDOWN, userProdCooldown)
-                .replace(IPointProduct.PLACEHOLDER_PRICE_INHERITED, userProdPrice)
+            .replace(IPointProduct.PLACEHOLDER_COOLDOWN, userProdCooldown)
+            .replace(IPointProduct.PLACEHOLDER_PRICE_INHERITED, userProdPrice)
         );
         formatProduct.replaceAll(product.replacePlaceholders());
         formatProduct.replaceAll(Config.replacePlaceholders());
@@ -107,11 +107,6 @@ public class StoreView extends AbstractMenu<GamePoints> {
         meta.setDisplayName(product.getName());
         meta.setLore(formatProduct);
         item.setItemMeta(meta);
-    }
-
-    @Override
-    public boolean cancelClick(@NotNull SlotType slotType, int slot) {
-        return true;
     }
 
     @Override

@@ -6,6 +6,7 @@ import su.nexmedia.engine.api.data.AbstractUserDataHandler;
 import su.nexmedia.engine.api.data.DataTypes;
 import su.nightexpress.gamepoints.GamePoints;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,18 +14,19 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class GamePointsData extends AbstractUserDataHandler<GamePoints, PointUser> {
+public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, PointUser> {
 
-    private static GamePointsData instance;
+    private static PointsDataHandler instance;
 
     private final Function<ResultSet, PointUser> FUNC_USER;
 
     private static final String COL_BALANCE = "balance";
     private static final String COL_PURCHASES = "purchases";
 
-    GamePointsData(@NotNull GamePoints plugin) throws SQLException {
+    PointsDataHandler(@NotNull GamePoints plugin) throws SQLException {
         super(plugin);
 
         this.FUNC_USER = (rs) -> {
@@ -45,9 +47,9 @@ public class GamePointsData extends AbstractUserDataHandler<GamePoints, PointUse
     }
 
     @NotNull
-    public static synchronized GamePointsData getInstance(@NotNull GamePoints plugin) throws SQLException {
+    public static synchronized PointsDataHandler getInstance(@NotNull GamePoints plugin) throws SQLException {
         if (instance == null) {
-            instance = new GamePointsData(plugin);
+            instance = new PointsDataHandler(plugin);
         }
         return instance;
     }
@@ -56,6 +58,36 @@ public class GamePointsData extends AbstractUserDataHandler<GamePoints, PointUse
     protected void onTableCreate() {
         super.onTableCreate();
         this.addColumn(this.tableUsers, "purchases", DataTypes.STRING.build(this.dataType));
+    }
+
+    public void updateUserBalance(@NotNull PointUser user) {
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            String sql = "SELECT `" + COL_BALANCE + "` FROM " + this.tableUsers + " WHERE `" + COL_USER_NAME + "` = ?";
+            try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+                statement.setString(1, user.getName());
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    return resultSet.getInt(COL_BALANCE);
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        });
+
+        future.thenAccept(balance -> {
+            if (balance >= 0) {
+                user.setBalance(balance);
+            }
+        });
+
+        /*try {
+            future.get();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @NotNull

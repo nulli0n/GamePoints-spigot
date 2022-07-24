@@ -4,12 +4,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.command.AbstractCommand;
+import su.nexmedia.engine.lang.EngineLang;
 import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +25,13 @@ public class PayCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Pay_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_PAY_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Pay_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_PAY_USAGE).getLocalized();
     }
 
     @Override
@@ -59,7 +61,7 @@ public class PayCommand extends AbstractCommand<GamePoints> {
 
         String userName = args[1];
         if (userName.equalsIgnoreCase(sender.getName())) {
-            plugin.lang().Error_Command_Self.send(sender);
+            plugin.getMessage(EngineLang.ERROR_COMMAND_SELF).send(sender);
             return;
         }
 
@@ -73,18 +75,18 @@ public class PayCommand extends AbstractCommand<GamePoints> {
         PointUser userFrom = plugin.getUserManager().getOrLoadUser(from);
         int amount = StringUtil.getInteger(args[2], 0);
         if (amount <= 0) {
-            plugin.lang().Error_Number_Invalid.replace("%num%", args[2]).send(sender);
+            plugin.getMessage(EngineLang.ERROR_NUMBER_INVALID).replace("%num%", args[2]).send(sender);
             return;
         }
         if (amount > userFrom.getBalance()) {
-            plugin.lang().Command_Pay_Error_NoMoney.send(from);
+            plugin.getMessage(Lang.COMMAND_PAY_ERROR_NO_MONEY).send(from);
             return;
         }
 
         userTarget.addPoints(amount);
         userFrom.takePoints(amount);
 
-        plugin.lang().Command_Pay_Done_Sender
+        plugin.getMessage(Lang.COMMAND_PAY_DONE_SENDER)
             .replace(Config.replacePlaceholders())
             .replace("%amount%", amount)
             .replace("%player%", userTarget.getName())
@@ -92,7 +94,7 @@ public class PayCommand extends AbstractCommand<GamePoints> {
 
         Player pTarget = plugin.getServer().getPlayer(userTarget.getName());
         if (pTarget != null) {
-            plugin.lang().Command_Pay_Done_User
+            plugin.getMessage(Lang.COMMAND_PAY_DONE_USER)
                 .replace(Config.replacePlaceholders())
                 .replace("%amount%", amount)
                 .replace("%player%", userFrom.getName())

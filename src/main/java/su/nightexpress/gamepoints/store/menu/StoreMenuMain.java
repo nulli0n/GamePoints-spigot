@@ -77,11 +77,6 @@ public class StoreMenuMain extends AbstractMenu<GamePoints> {
     }
 
     @Override
-    public boolean cancelClick(@NotNull SlotType slotType, int slot) {
-        return true;
-    }
-
-    @Override
     public boolean cancelClick(@NotNull InventoryClickEvent e, @NotNull SlotType slotType) {
         return true;
     }

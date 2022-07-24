@@ -1,7 +1,7 @@
 package su.nightexpress.gamepoints.config;
 
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.config.ConfigTemplate;
+import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.gamepoints.GamePoints;
 
@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class Config extends ConfigTemplate {
+public class Config {
 
     public static String POINTS_NAME;
     public static int    GENERAL_START_BALANCE;
@@ -33,12 +33,9 @@ public class Config extends ConfigTemplate {
         return str -> str.replace(PLACEHOLDER_POINTS_NAME, POINTS_NAME);
     }
 
-    public Config(@NotNull GamePoints plugin) {
-        super(plugin);
-    }
+    public static void load(@NotNull GamePoints plugin) {
+        JYML cfg = plugin.getConfig();
 
-    @Override
-    public void load() {
         String path = "General.";
         POINTS_NAME = StringUtil.color(cfg.getString(path + "Points_Name", "Game Points"));
         GENERAL_START_BALANCE = cfg.getInt(path + "Start_Balance", 0);

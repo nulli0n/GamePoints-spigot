@@ -1,7 +1,8 @@
 Plugin:
   Command_Aliases: gp,gamepoints,points,coins
   Language: en
-  Prefix: 'GamePoints'
+  Prefix: '&e%plugin_name% &8» &7'
+  Name: 'GamePoints'
 
 Database:
   Type: SQLite

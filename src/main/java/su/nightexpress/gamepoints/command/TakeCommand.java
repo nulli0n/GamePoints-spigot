@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +24,13 @@ public class TakeCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Take_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_TAKE_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Take_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_TAKE_USAGE).getLocalized();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class TakeCommand extends AbstractCommand<GamePoints> {
         String userName = args[1];
         int amount = StringUtil.getInteger(args[2], 0);
         if (amount <= 0) {
-            plugin.lang().Error_Number_Invalid.replace("%num%", args[2]).send(sender);
+            this.errorNumber(sender, args[2]);
             return;
         }
 
@@ -71,7 +72,7 @@ public class TakeCommand extends AbstractCommand<GamePoints> {
 
         user.takePoints(amount);
 
-        plugin.lang().Command_Take_Done_Sender
+        plugin.getMessage(Lang.COMMAND_TAKE_DONE_SENDER)
             .replace(Config.replacePlaceholders())
             .replace("%amount%", amount)
             .replace(user.replacePlaceholders())
@@ -79,7 +80,7 @@ public class TakeCommand extends AbstractCommand<GamePoints> {
 
         Player player = plugin.getServer().getPlayer(user.getName());
         if (player != null) {
-            plugin.lang().Command_Take_Done_User
+            plugin.getMessage(Lang.COMMAND_TAKE_DONE_USER)
                 .replace(Config.replacePlaceholders())
                 .replace("%amount%", amount).send(player);
         }

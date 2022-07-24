@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +24,13 @@ public class AddCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Add_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_ADD_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Add_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_ADD_USAGE).getLocalized();
     }
 
     @Override
@@ -70,14 +71,15 @@ public class AddCommand extends AbstractCommand<GamePoints> {
 
         user.addPoints(amount);
 
-        plugin.lang().Command_Add_Done_Sender
-                .replace(Config.replacePlaceholders())
-                .replace("%amount%", amount).replace(user.replacePlaceholders()).send(sender);
+        plugin.getMessage(Lang.COMMAND_ADD_DONE_SENDER)
+            .replace(Config.replacePlaceholders())
+            .replace("%amount%", amount).replace(user.replacePlaceholders()).send(sender);
 
         Player player = user.getPlayer();
         if (player != null) {
-            plugin.lang().Command_Add_Done_User.replace(Config.replacePlaceholders())
-                    .replace("%amount%", amount).send(player);
+            plugin.getMessage(Lang.COMMAND_ADD_DONE_USER)
+                .replace(Config.replacePlaceholders())
+                .replace("%amount%", amount).send(player);
         }
     }
 }

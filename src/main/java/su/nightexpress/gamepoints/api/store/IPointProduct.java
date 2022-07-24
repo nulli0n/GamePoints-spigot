@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.manager.IPlaceholder;
+import su.nexmedia.engine.lang.LangManager;
 import su.nexmedia.engine.utils.PlayerUtil;
 import su.nexmedia.engine.utils.TimeUtil;
 import su.nightexpress.gamepoints.GamePoints;
@@ -34,7 +35,7 @@ public interface IPointProduct extends IPlaceholder {
             .replace(PLACEHOLDER_DESCRIPTION, String.join("\n", this.getDescription()))
             .replace(PLACEHOLDER_ID, this.getId())
             .replace(PLACEHOLDER_NAME, this.getName())
-            .replace(PLACEHOLDER_ONE_TIME_PURCHASE, plugin.lang().getBoolean(this.isOneTimedPurchase()))
+            .replace(PLACEHOLDER_ONE_TIME_PURCHASE, LangManager.getBoolean(this.isOneTimedPurchase()))
             .replace(PLACEHOLDER_PURCHASE_COOLDOWN, TimeUtil.formatTime(this.getPurchaseCooldown()))
             .replace(PLACEHOLDER_PRICE, String.valueOf(this.getPrice()))
             .replace(PLACEHOLDER_PRICE_FINAL, String.valueOf(this.getPriceFinal()))

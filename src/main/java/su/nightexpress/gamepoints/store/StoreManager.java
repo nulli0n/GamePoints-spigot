@@ -8,7 +8,6 @@ import su.nexmedia.engine.utils.FileUtil;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.api.store.IPointStore;
 import su.nightexpress.gamepoints.config.Config;
-import su.nightexpress.gamepoints.legacy.LegacyStore;
 import su.nightexpress.gamepoints.store.listener.StoreListener;
 import su.nightexpress.gamepoints.store.menu.StoreMenuConfirmation;
 import su.nightexpress.gamepoints.store.menu.StoreMenuMain;
@@ -40,9 +39,6 @@ public class StoreManager extends AbstractManager<GamePoints> {
         this.stores = new HashMap<>();
         this.balanceTop = new ArrayList<>();
 
-        for (JYML cfg : JYML.loadAll(plugin.getDataFolder() + DIR_STORES, false)) {
-            LegacyStore.update(plugin, cfg);
-        }
         for (File dir : FileUtil.getFolders(plugin.getDataFolder() + DIR_STORES)) {
             JYML cfg = new JYML(dir.getAbsolutePath(), dir.getName() + ".yml");
             IPointStore store = new PointStore(plugin, cfg);

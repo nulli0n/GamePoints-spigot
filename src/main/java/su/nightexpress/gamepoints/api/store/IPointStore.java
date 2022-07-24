@@ -7,8 +7,10 @@ import su.nexmedia.engine.api.manager.ConfigHolder;
 import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.manager.IPlaceholder;
 import su.nexmedia.engine.api.menu.IMenu;
+import su.nexmedia.engine.lang.LangManager;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Collection;
 import java.util.Map;
@@ -28,7 +30,7 @@ public interface IPointStore extends ConfigHolder, IPlaceholder, ICleanable {
         return str -> str
                 .replace(PLACEHOLDER_ID, this.getId())
                 .replace(PLACEHOLDER_NAME, this.getName())
-                .replace(PLACEHOLDER_PERMISSION_REQUIRED, plugin().lang().getBoolean(this.isPermissionRequired()))
+                .replace(PLACEHOLDER_PERMISSION_REQUIRED, LangManager.getBoolean(this.isPermissionRequired()))
                 .replace(PLACEHOLDER_PERMISSION, Perms.STORE + this.getId())
                 ;
     }
@@ -68,7 +70,7 @@ public interface IPointStore extends ConfigHolder, IPlaceholder, ICleanable {
 
     default boolean open(@NotNull Player player) {
         if (!this.hasPermission(player)) {
-            plugin().lang().Store_Open_Error_Permission.replace(this.replacePlaceholders()).send(player);
+            plugin().getMessage(Lang.STORE_OPEN_ERROR_PERMISSION).replace(this.replacePlaceholders()).send(player);
             return false;
         }
         this.getView().open(player, 1);

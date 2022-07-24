@@ -7,10 +7,10 @@ import su.nexmedia.engine.api.data.UserDataHolder;
 import su.nexmedia.engine.hooks.Hooks;
 import su.nightexpress.gamepoints.command.*;
 import su.nightexpress.gamepoints.config.Config;
-import su.nightexpress.gamepoints.config.Lang;
-import su.nightexpress.gamepoints.data.GamePointsData;
+import su.nightexpress.gamepoints.lang.Lang;
+import su.nightexpress.gamepoints.data.PointsDataHandler;
 import su.nightexpress.gamepoints.data.PointUser;
-import su.nightexpress.gamepoints.data.UserManager;
+import su.nightexpress.gamepoints.data.PointsUserManager;
 import su.nightexpress.gamepoints.hook.PlaceholderAPIHook;
 import su.nightexpress.gamepoints.store.StoreManager;
 
@@ -18,28 +18,24 @@ import java.sql.SQLException;
 
 public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<GamePoints, PointUser> {
 
-    private static GamePoints instance;
+    private StoreManager      storeManager;
+    private PointsDataHandler pointsDataHandler;
+    private PointsUserManager pointsUserManager;
 
-    private Config config;
-    private Lang   lang;
-
-    private StoreManager   storeManager;
-
-    private GamePointsData dataHandler;
-    private UserManager userManager;
-
-    public static GamePoints getInstance() {
-        return instance;
-    }
-
-    public GamePoints() {
-        instance = this;
+    @Override
+    @NotNull
+    protected GamePoints getSelf() {
+        return this;
     }
 
     @Override
     public void enable() {
         this.storeManager = new StoreManager(this);
         this.storeManager.setup();
+
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, c -> {
+            this.getUserManager().getActiveUsers().forEach(user -> this.getData().updateUserBalance(user));
+        }, 0L, 100L);
     }
 
     @Override
@@ -51,46 +47,30 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
     }
 
     @Override
-    public boolean useNewConfigFields() {
-        return true;
-    }
-
-    @Override
     public boolean setupDataHandlers() {
         try {
-            this.dataHandler = GamePointsData.getInstance(this);
-            this.dataHandler.setup();
+            this.pointsDataHandler = PointsDataHandler.getInstance(this);
+            this.pointsDataHandler.setup();
         }
         catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
 
-        this.userManager = new UserManager(this);
-        this.userManager.setup();
+        this.pointsUserManager = new PointsUserManager(this);
+        this.pointsUserManager.setup();
 
         return true;
     }
 
     @Override
-    public void setConfig() {
-        this.config = new Config(this);
-        this.config.setup();
-
-        this.lang = new Lang(this);
-        this.lang.setup();
+    public void loadConfig() {
+        Config.load(this);
     }
 
     @Override
-    @NotNull
-    public Config cfg() {
-        return this.config;
-    }
-
-    @Override
-    @NotNull
-    public Lang lang() {
-        return this.lang;
+    public void loadLang() {
+        this.getLangManager().loadMissing(Lang.class);
     }
 
     @Override
@@ -120,13 +100,13 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
 
     @Override
     @NotNull
-    public GamePointsData getData() {
-        return this.dataHandler;
+    public PointsDataHandler getData() {
+        return this.pointsDataHandler;
     }
 
     @NotNull
     @Override
-    public UserManager getUserManager() {
-        return userManager;
+    public PointsUserManager getUserManager() {
+        return pointsUserManager;
     }
 }

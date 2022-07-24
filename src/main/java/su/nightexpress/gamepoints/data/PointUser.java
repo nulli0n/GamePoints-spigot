@@ -11,6 +11,7 @@ import su.nightexpress.gamepoints.api.event.PointUserChangeBalanceEvent;
 import su.nightexpress.gamepoints.api.store.IPointProduct;
 import su.nightexpress.gamepoints.api.store.IPointStore;
 import su.nightexpress.gamepoints.config.Config;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -69,7 +70,7 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
         if (balanceEvent.isCancelled()) return;
 
         this.balance = Math.max(0, balance);
-        if (plugin.cfg().dataSaveInstant) {
+        if (plugin.getConfigManager().dataSaveInstant) {
             plugin.getUserManager().save(this, true);
         }
     }
@@ -124,10 +125,10 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
                 if (!notify) return false;
 
                 if (product.isOneTimedPurchase()) {
-                    plugin.lang().Store_Buy_Error_SinglePurchase.send(player);
+                    plugin.getMessage(Lang.STORE_BUY_ERROR_SINGLE_PURCHASE).send(player);
                 }
                 else {
-                    plugin.lang().Store_Buy_Error_Cooldown.replace(IPointProduct.PLACEHOLDER_COOLDOWN, TimeUtil.formatTimeLeft(cooldown)).send(player);
+                    plugin.getMessage(Lang.STORE_BUY_ERROR_COOLDOWN).replace(IPointProduct.PLACEHOLDER_COOLDOWN, TimeUtil.formatTimeLeft(cooldown)).send(player);
                 }
             }
             return false;
@@ -135,13 +136,13 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
 
         int priceInherited = this.getInheritedPriceForItem(product);
         if (this.getBalance() < priceInherited) {
-            if (notify) plugin.lang().Store_Buy_Error_NoMoney.replace(Config.replacePlaceholders()).send(player);
+            if (notify) plugin.getMessage(Lang.STORE_BUY_ERROR_NO_MONEY).replace(Config.replacePlaceholders()).send(player);
             return false;
         }
 
         int priceOrig = product.getPriceFinal();
         if (priceInherited == 0 && priceOrig > 0) {
-            if (notify) plugin.lang().Store_Buy_Error_Inherited.send(player);
+            if (notify) plugin.getMessage(Lang.STORE_BUY_ERROR_INHERITED).send(player);
             return false;
         }
 
@@ -170,16 +171,16 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
             this.getPurchases(store).put(product.getId(), cooldown);
         }
 
-        if (plugin.cfg().dataSaveInstant) {
+        if (plugin.getConfigManager().dataSaveInstant) {
             plugin.getUserManager().save(this, true);
         }
 
-        plugin.lang().Store_Buy_Success
-                .replace(Config.replacePlaceholders())
-                .replace(product.replacePlaceholders())
-                .replace(this.replacePlaceholders())
-                .replace(IPointProduct.PLACEHOLDER_PRICE_INHERITED, price)
-                .send(player);
+        plugin.getMessage(Lang.STORE_BUY_SUCCESS)
+            .replace(Config.replacePlaceholders())
+            .replace(product.replacePlaceholders())
+            .replace(this.replacePlaceholders())
+            .replace(IPointProduct.PLACEHOLDER_PRICE_INHERITED, price)
+            .send(player);
 
         return true;
     }
@@ -191,9 +192,9 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
         IPointStore store = product.getStore();
 
         Set<IPointProduct> inherited = product.getInheritedPrice().stream()
-                .map(store::getProduct)
-                .filter(Objects::nonNull).filter(IPointProduct::isOneTimedPurchase).filter(this::isProductOnCooldown)
-                .collect(Collectors.toSet());
+            .map(store::getProduct)
+            .filter(Objects::nonNull).filter(IPointProduct::isOneTimedPurchase).filter(this::isProductOnCooldown)
+            .collect(Collectors.toSet());
 
         IPointProduct best = inherited.stream().max(Comparator.comparingInt(IPointProduct::getPriority)).orElse(null);
         return best != null ? Math.max(0, price - best.getPriceFinal()) : price;

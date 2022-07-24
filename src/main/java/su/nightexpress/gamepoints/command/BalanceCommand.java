@@ -9,6 +9,7 @@ import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
 
@@ -21,13 +22,13 @@ public class BalanceCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_Balance_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_BALANCE_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_Balance_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_BALANCE_USAGE).getLocalized();
     }
 
     @Override
@@ -63,7 +64,7 @@ public class BalanceCommand extends AbstractCommand<GamePoints> {
             return;
         }
 
-        plugin.lang().Command_Balance_Done
+        plugin.getMessage(Lang.COMMAND_BALANCE_DONE)
             .replace(Config.replacePlaceholders())
             .replace(user.replacePlaceholders())
             .send(sender);

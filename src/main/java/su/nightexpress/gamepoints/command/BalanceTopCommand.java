@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.config.Config;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,13 +26,13 @@ public class BalanceTopCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_BalanceTop_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_BALANCE_TOP_DESC).getLocalized();
     }
 
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_BalanceTop_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_BALANCE_TOP_USAGE).getLocalized();
     }
 
     @Override
@@ -61,7 +62,7 @@ public class BalanceTopCommand extends AbstractCommand<GamePoints> {
         List<Map.Entry<String, Integer>> list = pages > 0 ? total.get(page) : new ArrayList<>();
         int pos = 1 + 10 * page;
 
-        for (String line : plugin.lang().Command_BalanceTop_List
+        for (String line : plugin.getMessage(Lang.COMMAND_BALANCE_TOP_LIST)
                 .replace(Config.replacePlaceholders())
                 .replace("%page_min%", (page + 1)).replace("%page_max%", pages)
                 .asList()) {

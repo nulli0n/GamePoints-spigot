@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.data.AbstractUserManager;
 import su.nightexpress.gamepoints.GamePoints;
 
-public class UserManager extends AbstractUserManager<GamePoints, PointUser> {
+public class PointsUserManager extends AbstractUserManager<GamePoints, PointUser> {
 
-    public UserManager(@NotNull GamePoints plugin) {
+    public PointsUserManager(@NotNull GamePoints plugin) {
         super(plugin, plugin);
     }
 

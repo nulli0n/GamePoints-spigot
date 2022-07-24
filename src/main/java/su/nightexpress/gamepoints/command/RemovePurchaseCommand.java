@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.api.store.IPointProduct;
 import su.nightexpress.gamepoints.api.store.IPointStore;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ public class RemovePurchaseCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_RemovePurchase_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_REMOVE_PURCHASE_USAGE).getLocalized();
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_RemovePurchase_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_REMOVE_PURCHASE_DESC).getLocalized();
     }
 
     @Override
@@ -68,6 +69,6 @@ public class RemovePurchaseCommand extends AbstractCommand<GamePoints> {
         String storeId = args[2];
         String productId = args[3];
         user.getPurchases(storeId).remove(productId);
-        plugin.lang().Command_RemovePurchase_Done_User.send(sender);
+        plugin.getMessage(Lang.COMMAND_REMOVE_PURCHASE_DONE_USER).send(sender);
     }
 }

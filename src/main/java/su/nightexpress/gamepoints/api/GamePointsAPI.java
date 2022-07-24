@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.api.store.IPointStore;
-import su.nightexpress.gamepoints.data.UserManager;
+import su.nightexpress.gamepoints.data.PointsUserManager;
 import su.nightexpress.gamepoints.data.PointUser;
 import su.nightexpress.gamepoints.store.StoreManager;
 
@@ -36,7 +36,7 @@ public class GamePointsAPI {
     }
 
     @NotNull
-    public static UserManager getUserManager() {
+    public static PointsUserManager getUserManager() {
         return PLUGIN.getUserManager();
     }
 

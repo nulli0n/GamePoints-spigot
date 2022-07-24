@@ -10,6 +10,7 @@ import su.nightexpress.gamepoints.Perms;
 import su.nightexpress.gamepoints.api.store.IPointProduct;
 import su.nightexpress.gamepoints.api.store.IPointStore;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ public class AddPurchaseCommand extends AbstractCommand<GamePoints> {
     @Override
     @NotNull
     public String getUsage() {
-        return plugin.lang().Command_AddPurchase_Usage.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_ADD_PURCHASE_USAGE).getLocalized();
     }
 
     @Override
     @NotNull
     public String getDescription() {
-        return plugin.lang().Command_AddPurchase_Desc.getLocalized();
+        return plugin.getMessage(Lang.COMMAND_ADD_PURCHASE_DESC).getLocalized();
     }
 
     @Override
@@ -68,24 +69,24 @@ public class AddPurchaseCommand extends AbstractCommand<GamePoints> {
         String storeId = args[2];
         IPointStore store = this.plugin.getStoreManager().getStore(storeId);
         if (store == null) {
-            plugin.lang().Store_Error_Invalid.send(sender);
+            plugin.getMessage(Lang.STORE_ERROR_INVALID).send(sender);
             return;
         }
 
         String productId = args[3];
         IPointProduct product = store.getProduct(productId);
         if (product == null) {
-            plugin.lang().Store_Error_Product_Invalid.send(sender);
+            plugin.getMessage(Lang.STORE_ERROR_PRODUCT_INVALID).send(sender);
             return;
         }
 
         if (product.getPurchaseCooldown() == 0L) {
-            plugin.lang().Command_AddPurchase_Error_NoCooldown.send(sender);
+            plugin.getMessage(Lang.COMMAND_ADD_PURCHASE_ERROR_NO_COOLDOWN).send(sender);
             return;
         }
 
         long cooldown = product.getPurchaseNextTime();
         user.getPurchases(store).put(product.getId(), cooldown);
-        plugin.lang().Command_AddPurchase_Done_User.send(sender);
+        plugin.getMessage(Lang.COMMAND_ADD_PURCHASE_DONE_USER).send(sender);
     }
 }

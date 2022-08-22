@@ -95,7 +95,7 @@ public class PlaceholderAPIHook extends AbstractHook<GamePoints> {
 
             if (player == null) return null;
 
-            PointUser user = plugin.getUserManager().getOrLoadUser(player);
+            PointUser user = plugin.getUserManager().getUserData(player);
             if (holder.startsWith("item_price")) {
                 String[] ss = this.getProductStoreIds("item_price_", holder);
                 String storeId = ss[0];

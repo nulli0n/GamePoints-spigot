@@ -29,16 +29,17 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
     PointsDataHandler(@NotNull GamePoints plugin) throws SQLException {
         super(plugin);
 
-        this.FUNC_USER = (rs) -> {
+        this.FUNC_USER = (resultSet) -> {
             try {
-                UUID uuid = UUID.fromString(rs.getString(COL_USER_UUID));
-                String name = rs.getString(COL_USER_NAME);
-                long lastOnline = rs.getLong(COL_USER_LAST_ONLINE);
+                UUID uuid = UUID.fromString(resultSet.getString(COL_USER_UUID));
+                String name = resultSet.getString(COL_USER_NAME);
+                long dateCreated = resultSet.getLong(COL_USER_DATE_CREATED);
+                long lastOnline = resultSet.getLong(COL_USER_LAST_ONLINE);
 
-                int balance = rs.getInt(COL_BALANCE);
-                Map<String, Map<String, Long>> items = gson.fromJson(rs.getString(COL_PURCHASES), new TypeToken<Map<String, Map<String, Long>>>() {}.getType());
+                int balance = resultSet.getInt(COL_BALANCE);
+                Map<String, Map<String, Long>> items = gson.fromJson(resultSet.getString(COL_PURCHASES), new TypeToken<Map<String, Map<String, Long>>>() {}.getType());
 
-                return new PointUser(plugin, uuid, name, lastOnline, balance, items);
+                return new PointUser(plugin, uuid, name, dateCreated, lastOnline, balance, items);
             }
             catch (SQLException e) {
                 return null;

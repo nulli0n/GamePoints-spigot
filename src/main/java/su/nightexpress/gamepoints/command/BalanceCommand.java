@@ -58,7 +58,7 @@ public class BalanceCommand extends AbstractCommand<GamePoints> {
         }
 
         String userName = args.length == 2 ? args[1] : sender.getName();
-        PointUser user = plugin.getUserManager().getOrLoadUser(userName, false);
+        PointUser user = plugin.getUserManager().getUserData(userName);
         if (user == null) {
             this.errorPlayer(sender);
             return;

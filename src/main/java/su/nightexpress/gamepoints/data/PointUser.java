@@ -34,8 +34,8 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
                 ;
     }
 
-    public PointUser(@NotNull GamePoints plugin, @NotNull Player player) {
-        this(plugin, player.getUniqueId(), player.getName(), System.currentTimeMillis(),
+    public PointUser(@NotNull GamePoints plugin, @NotNull UUID uuid, @NotNull String name) {
+        this(plugin, uuid, name, System.currentTimeMillis(), System.currentTimeMillis(),
                 Config.GENERAL_START_BALANCE, new HashMap<>());
     }
 
@@ -43,12 +43,13 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
             @NotNull GamePoints plugin,
             @NotNull UUID uuid,
             @NotNull String name,
-            long login,
+            long dateCreated,
+            long lastLogin,
             int balance,
             @NotNull Map<String, Map<String, Long>> purchases
     ) {
-        super(plugin, uuid, name, login);
-        this.setBalance(balance);
+        super(plugin, uuid, name, dateCreated, lastLogin);
+        this.setBalanceRaw(balance);
         this.purchases = purchases;
     }
 
@@ -69,10 +70,14 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
         plugin.getPluginManager().callEvent(balanceEvent);
         if (balanceEvent.isCancelled()) return;
 
-        this.balance = Math.max(0, balance);
+        this.setBalanceRaw(balance);
         if (plugin.getConfigManager().dataSaveInstant) {
             plugin.getUserManager().save(this, true);
         }
+    }
+
+    public void setBalanceRaw(int balance) {
+        this.balance = Math.max(0, balance);
     }
 
     @NotNull

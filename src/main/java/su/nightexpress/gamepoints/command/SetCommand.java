@@ -58,7 +58,7 @@ public class SetCommand extends AbstractCommand<GamePoints> {
         }
 
         String userName = args[1];
-        PointUser user = plugin.getUserManager().getOrLoadUser(userName, false);
+        PointUser user = plugin.getUserManager().getUserData(userName);
         if (user == null) {
             this.errorPlayer(sender);
             return;

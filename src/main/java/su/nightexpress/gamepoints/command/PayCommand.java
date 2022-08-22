@@ -65,14 +65,14 @@ public class PayCommand extends AbstractCommand<GamePoints> {
             return;
         }
 
-        PointUser userTarget = plugin.getUserManager().getOrLoadUser(userName, false);
+        PointUser userTarget = plugin.getUserManager().getUserData(userName);
         if (userTarget == null) {
             this.errorPlayer(sender);
             return;
         }
 
         Player from = (Player) sender;
-        PointUser userFrom = plugin.getUserManager().getOrLoadUser(from);
+        PointUser userFrom = plugin.getUserManager().getUserData(from);
         int amount = StringUtil.getInteger(args[2], 0);
         if (amount <= 0) {
             plugin.getMessage(EngineLang.ERROR_NUMBER_INVALID).replace("%num%", args[2]).send(sender);

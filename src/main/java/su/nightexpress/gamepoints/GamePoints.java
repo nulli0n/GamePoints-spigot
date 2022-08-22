@@ -32,10 +32,6 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
     public void enable() {
         this.storeManager = new StoreManager(this);
         this.storeManager.setup();
-
-        /*this.getServer().getScheduler().runTaskTimerAsynchronously(this, c -> {
-            this.getUserManager().getActiveUsers().forEach(user -> this.getData().updateUserBalance(user));
-        }, 0L, 100L);*/
     }
 
     @Override

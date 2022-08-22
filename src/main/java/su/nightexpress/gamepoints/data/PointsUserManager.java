@@ -1,9 +1,10 @@
 package su.nightexpress.gamepoints.data;
 
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.data.AbstractUserManager;
 import su.nightexpress.gamepoints.GamePoints;
+
+import java.util.UUID;
 
 public class PointsUserManager extends AbstractUserManager<GamePoints, PointUser> {
 
@@ -13,7 +14,12 @@ public class PointsUserManager extends AbstractUserManager<GamePoints, PointUser
 
     @Override
     @NotNull
-    protected PointUser createData(@NotNull Player player) {
-        return new PointUser(plugin, player);
+    protected PointUser createData(@NotNull UUID uuid, @NotNull String name) {
+        return new PointUser(plugin, uuid, name);
+    }
+
+    @Override
+    protected void onSynchronize() {
+        this.plugin.getUserManager().getUsersLoaded().forEach(user -> this.plugin.getData().updateUserBalance(user));
     }
 }

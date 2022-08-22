@@ -49,7 +49,7 @@ public class StoreView extends AbstractMenu<GamePoints> {
     public void onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
         this.setPage(player, this.getPage(player), this.store.getPages());
 
-        PointUser user = plugin.getUserManager().getOrLoadUser(player);
+        PointUser user = plugin.getUserManager().getUserData(player);
         for (IPointProduct product : this.store.getProducts()) {
             if (product.getStorePage() != this.getPage(player)) continue;
 

@@ -60,7 +60,7 @@ public class RemovePurchaseCommand extends AbstractCommand<GamePoints> {
             return;
         }
 
-        PointUser user = plugin.getUserManager().getOrLoadUser(args[1], false);
+        PointUser user = plugin.getUserManager().getUserData(args[1]);
         if (user == null) {
             this.errorPlayer(sender);
             return;

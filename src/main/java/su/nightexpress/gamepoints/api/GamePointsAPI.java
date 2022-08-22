@@ -5,11 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.api.store.IPointStore;
-import su.nightexpress.gamepoints.data.PointsUserManager;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.data.PointsUserManager;
 import su.nightexpress.gamepoints.store.StoreManager;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class GamePointsAPI {
 
@@ -17,12 +18,17 @@ public class GamePointsAPI {
 
     @NotNull
     public static PointUser getUserData(@NotNull Player player) {
-        return PLUGIN.getUserManager().getOrLoadUser(player);
+        return PLUGIN.getUserManager().getUserData(player);
     }
 
     @Nullable
-    public static PointUser getUserData(@NotNull String name, boolean uuid) {
-        return PLUGIN.getUserManager().getOrLoadUser(name, uuid);
+    public static PointUser getUserData(@NotNull String name) {
+        return PLUGIN.getUserManager().getUserData(name);
+    }
+
+    @Nullable
+    public static PointUser getUserData(@NotNull UUID uuid) {
+        return PLUGIN.getUserManager().getUserData(uuid);
     }
 
     @Nullable

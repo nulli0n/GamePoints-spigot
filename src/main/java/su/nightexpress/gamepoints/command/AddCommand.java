@@ -63,7 +63,7 @@ public class AddCommand extends AbstractCommand<GamePoints> {
             return;
         }
 
-        PointUser user = plugin.getUserManager().getOrLoadUser(userName, false);
+        PointUser user = plugin.getUserManager().getUserData(userName);
         if (user == null) {
             this.errorPlayer(sender);
             return;

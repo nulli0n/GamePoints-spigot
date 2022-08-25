@@ -1,0 +1,68 @@
+Command:
+  Add:
+    Usage: <player> <amount>
+    Desc: Añadir puntos a la cuenta del jugador.
+    Done:
+      Sender: '&7Se ha añadido &a%amount% %points_name% &7a &a%user_name%&7. Nuevo saldo: &a%user_balance% %points_name%&7.'
+      User: '&7¡Recibiste &a%amount% %points_name%&7!'
+  Take:
+    Usage: <player> <amount>
+    Desc: Tomar puntos de la cuenta del jugador.
+    Done:
+      Sender: '&7Se ha tomado &a%amount% %points_name% &7de &a%user_name%&7. Nuevo saldo: &a%user_balance% %points_name%&7.'
+      User: '&7¡Perdiste &a%amount% %points_name%&7!'
+  Set:
+    Usage: <player> <amount>
+    Desc: Establecer el saldo de la cuenta del jugador.
+    Done:
+      Sender: '&7Se ha establecido &a%amount% %points_name% &7para &a%user_name%&7. Nuevo saldo: &a%user_balance% %points_name%&7.'
+      User: '&7Tu balance ha sido establecido a &a%amount% %points_name%&7!'
+  Pay:
+    Usage: <player> <amount>
+    Desc: Transferir puntos a un jugador.
+    Error:
+      NoMoney: ¡No tienes suficientes puntos!
+    Done:
+      Sender: '&7¡Enviaste &a%amount% %points_name% &7a &a%player%&7!'
+      User: '&7¡Recibiste &a%amount% %points_name%&7 de &a%player%&7!'
+  AddPurchase:
+    Usage: <player> <store> <product>
+    Desc: Añadir la compra especificada a los datos del usuario.
+    Done:
+      User: '&7¡Compra añadida!'
+    Error:
+      NoCooldown: '&c¡El producto especificado no tiene cooldown! Es inútil añadirlo.'
+  RemovePurchase:
+    Usage: <player> <store> <product>
+    Desc: Eliminar la compra especificada de los datos del usuario.
+    Done:
+      User: '&7¡Compra eliminada!'
+  Balance:
+    Usage: '[player]'
+    Desc: Muestra el saldo del jugador.
+    Done: '&7Saldo de &a%user_name%&7: &a%user_balance% %points_name%'
+  BalanceTop:
+    Usage: '[page]'
+    Desc: Muestra el top de saldos.
+    List:
+    - '&6&m             &6&l[ &e&lGame Points &7- &e&lTop &f%page_min%&7/&f%page_max% &6&l]&6&m             &7'
+    - '&6%pos%. &e%user_name%: &a%user_balance% %points_name%'
+    - '&6&m             &6&l[ &e&lEnd Game Points Top &6&l]&6&m              &7'
+  Store:
+    Usage: '[store] [player]'
+    Desc: Abre la tienda especificada.
+Store:
+  Error:
+    Product:
+      Invalid: '&c¡Producto inválido!'
+    Invalid: '&c¡Tienda inválida!'
+  Open:
+    Error:
+      Permission: '&c¡Oops! &7¡No tienes acceso a la tienda %store_name%&7!'
+  Buy:
+    Error:
+      NoMoney: '&c¡Oops! &7¡No tienes suficientes %points_name%&7!'
+      Inherited: '&c¡Oops! &7¡Ya ha comprado una versión superior de este producto!'
+      SinglePurchase: '&c¡Oops! &7¡Este producto sólo se puede comprar una vez! Ya has comprado este producto.'
+      Cooldown: '&c¡Oops! &7Puedes volver a comprar este producto en: &c%product_cooldown%'
+    Success: '&7¡Has comprado con éxito &a%product_name%&7 por &a%product_price_inherited% %points_name%&7!'

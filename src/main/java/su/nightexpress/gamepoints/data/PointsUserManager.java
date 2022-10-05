@@ -17,9 +17,4 @@ public class PointsUserManager extends AbstractUserManager<GamePoints, PointUser
     protected PointUser createData(@NotNull UUID uuid, @NotNull String name) {
         return new PointUser(plugin, uuid, name);
     }
-
-    @Override
-    protected void onSynchronize() {
-        this.plugin.getUserManager().getUsersLoaded().forEach(user -> this.plugin.getData().updateUserBalance(user));
-    }
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class GamePointsAPI {
 
-    private static final GamePoints PLUGIN = GamePoints.getPlugin(GamePoints.class);
+    public static final GamePoints PLUGIN = GamePoints.getPlugin(GamePoints.class);
 
     @NotNull
     public static PointUser getUserData(@NotNull Player player) {

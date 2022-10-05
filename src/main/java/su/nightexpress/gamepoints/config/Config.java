@@ -12,6 +12,9 @@ import java.util.function.UnaryOperator;
 public class Config {
 
     public static String POINTS_NAME;
+
+    public static boolean GENERAL_CONVERSION_ENABLED;
+    public static String GENERAL_CONVERSION_FROM;
     public static int    GENERAL_START_BALANCE;
     public static int    GENERAL_TOP_UPDATE_MIN;
 
@@ -37,7 +40,12 @@ public class Config {
         JYML cfg = plugin.getConfig();
 
         String path = "General.";
+        cfg.addMissing(path + "Conversion.Enabled", false);
+        cfg.addMissing(path + "Conversion.From", "none");
+
         POINTS_NAME = StringUtil.color(cfg.getString(path + "Points_Name", "Game Points"));
+        GENERAL_CONVERSION_ENABLED = cfg.getBoolean(path + "Conversion.Enabled");
+        GENERAL_CONVERSION_FROM = cfg.getString(path + "Conversion.From");
         GENERAL_START_BALANCE = cfg.getInt(path + "Start_Balance", 0);
         GENERAL_TOP_UPDATE_MIN = cfg.getInt(path + "Balance_Top.Update_Interval", 20);
 
@@ -54,5 +62,10 @@ public class Config {
             TRANSACTION_LOGS_FORMAT = cfg.getString(path + "Format", "%user_name% bought ''%product_id%'' in ''%store_id%'' store for %product_price_inherited% points.");
             TRANSACTION_LOGS_DATE = DateTimeFormatter.ofPattern(cfg.getString(path + "Date", "dd/MM/yyyy HH:mm:ss"));
         }
+    }
+
+    public static void disableConversion(@NotNull GamePoints plugin) {
+        plugin.getConfig().set("General.Conversion.Enabled", false);
+        plugin.getConfig().save();
     }
 }

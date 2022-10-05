@@ -71,9 +71,7 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
         if (balanceEvent.isCancelled()) return;
 
         this.setBalanceRaw(balance);
-        if (plugin.getConfigManager().dataSaveInstant) {
-            plugin.getUserManager().save(this, true);
-        }
+        this.plugin.runTask(c -> this.saveData(this.plugin), true);
     }
 
     public void setBalanceRaw(int balance) {
@@ -176,9 +174,7 @@ public class PointUser extends AbstractUser<GamePoints> implements IPlaceholder 
             this.getPurchases(store).put(product.getId(), cooldown);
         }
 
-        if (plugin.getConfigManager().dataSaveInstant) {
-            plugin.getUserManager().save(this, true);
-        }
+        this.plugin.runTask(c -> this.saveData(this.plugin), true);
 
         plugin.getMessage(Lang.STORE_BUY_SUCCESS)
             .replace(Config.replacePlaceholders())

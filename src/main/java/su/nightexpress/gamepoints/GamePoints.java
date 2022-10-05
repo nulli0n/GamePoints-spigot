@@ -4,14 +4,17 @@ import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.NexPlugin;
 import su.nexmedia.engine.api.command.GeneralCommand;
 import su.nexmedia.engine.api.data.UserDataHolder;
+import su.nexmedia.engine.command.list.ReloadSubCommand;
 import su.nexmedia.engine.hooks.Hooks;
 import su.nightexpress.gamepoints.command.*;
 import su.nightexpress.gamepoints.config.Config;
-import su.nightexpress.gamepoints.lang.Lang;
-import su.nightexpress.gamepoints.data.PointsDataHandler;
+import su.nightexpress.gamepoints.conversion.DataConverter;
+import su.nightexpress.gamepoints.conversion.converter.AbstractDataConverter;
 import su.nightexpress.gamepoints.data.PointUser;
+import su.nightexpress.gamepoints.data.PointsDataHandler;
 import su.nightexpress.gamepoints.data.PointsUserManager;
 import su.nightexpress.gamepoints.hook.PlaceholderAPIHook;
+import su.nightexpress.gamepoints.lang.Lang;
 import su.nightexpress.gamepoints.store.StoreManager;
 
 import java.sql.SQLException;
@@ -30,6 +33,17 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
 
     @Override
     public void enable() {
+        if (Config.GENERAL_CONVERSION_ENABLED) {
+            AbstractDataConverter converter = DataConverter.getConverter(Config.GENERAL_CONVERSION_FROM);
+            if (converter == null) {
+                this.error("Could not setup data converter for '" + Config.GENERAL_CONVERSION_FROM + "'.");
+            }
+            else {
+                converter.convert();
+                Config.disableConversion(this);
+            }
+        }
+
         this.storeManager = new StoreManager(this);
         this.storeManager.setup();
     }
@@ -80,6 +94,7 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
         mainCommand.addChildren(new StoreCommand(this));
         mainCommand.addChildren(new TakeCommand(this));
         mainCommand.addChildren(new RemovePurchaseCommand(this));
+        mainCommand.addChildren(new ReloadSubCommand<>(this, Perms.ADMIN));
     }
 
     @Override
@@ -87,6 +102,11 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
         if (Hooks.hasPlaceholderAPI()) {
             this.registerHook(Hooks.PLACEHOLDER_API, PlaceholderAPIHook.class);
         }
+    }
+
+    @Override
+    public void registerPermissions() {
+        // TODO
     }
 
     @NotNull

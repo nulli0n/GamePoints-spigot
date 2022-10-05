@@ -6,10 +6,7 @@ import su.nexmedia.engine.api.data.AbstractUserDataHandler;
 import su.nexmedia.engine.api.data.DataTypes;
 import su.nightexpress.gamepoints.GamePoints;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,8 +23,8 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
     private static final String COL_BALANCE = "balance";
     private static final String COL_PURCHASES = "purchases";
 
-    PointsDataHandler(@NotNull GamePoints plugin) throws SQLException {
-        super(plugin);
+    PointsDataHandler(@NotNull GamePoints plugin) {
+        super(plugin, plugin);
 
         this.FUNC_USER = (resultSet) -> {
             try {
@@ -56,15 +53,28 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
     }
 
     @Override
+    protected void onShutdown() {
+        super.onShutdown();
+        instance = null;
+    }
+
+    @Override
+    public void onSynchronize() {
+        this.plugin.getUserManager().getUsersLoaded().forEach(user -> this.plugin.getData().updateUserBalance(user));
+    }
+
+    @Override
     protected void onTableCreate() {
         super.onTableCreate();
-        this.addColumn(this.tableUsers, "purchases", DataTypes.STRING.build(this.dataType));
+        this.addColumn(this.tableUsers, "purchases", DataTypes.STRING.build(this.getDataType()));
     }
 
     public void updateUserBalance(@NotNull PointUser user) {
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
             String sql = "SELECT `" + COL_BALANCE + "` FROM " + this.tableUsers + " WHERE `" + COL_USER_NAME + "` = ?";
-            try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            try (
+                Connection connection = this.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, user.getName());
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
@@ -79,7 +89,7 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
 
         future.thenAccept(balance -> {
             if (balance >= 0) {
-                user.setBalance(balance);
+                user.setBalanceRaw(balance);
             }
         });
 
@@ -96,7 +106,9 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
         Map<String, Integer> map = new HashMap<>();
         String sql = "SELECT `name`, `balance` FROM " + this.tableUsers;
 
-        try (Statement statement = this.getConnection().createStatement()) {
+        try (
+            Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 String name = resultSet.getString(COL_USER_NAME);
@@ -116,8 +128,8 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
     @NotNull
     protected LinkedHashMap<String, String> getColumnsToCreate() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put(COL_PURCHASES, DataTypes.STRING.build(this.dataType));
-        map.put(COL_BALANCE, DataTypes.INTEGER.build(this.dataType));
+        map.put(COL_PURCHASES, DataTypes.STRING.build(this.getDataType()));
+        map.put(COL_BALANCE, DataTypes.INTEGER.build(this.getDataType()));
         return map;
     }
 

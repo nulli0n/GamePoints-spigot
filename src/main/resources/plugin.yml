@@ -4,7 +4,7 @@ name: GamePoints
 author: NightExpress
 desciption: Additional virtual currency with internal GUI shop.
 depend: [ NexEngine ]
-softdepend: [ PlaceholderAPI ]
+softdepend: [ PlaceholderAPI, PlayerPoints ]
 api-version: 1.17
 permissions:
 #--------------------------------------------------------#

@@ -5,19 +5,30 @@ Plugin:
   Name: 'GamePoints'
 
 Database:
-  Type: SQLite
-  Auto_Save_Interval: 15
-  Instant_Save: true
+  Auto_Save_Interval: 20
+  Sync_Interval: 60
+  Type: SQLITE
+  Table_Prefix: 'gamepoints'
   MySQL:
-    Username: 'root'
-    Password: 'root'
-    Host: 'localhost:3306'
-    Database: 'minecraft'
+    Username: root
+    Password: root
+    Host: localhost
+    Database: minecraft
+  SQLite:
+    FileName: data.db
   Purge:
     Enabled: false
-    For_Inactive_Days: 60
+    For_Period: 60
 
 General:
+  # Convert user data from other points plugins.
+  Conversion:
+    # Enable/Disable the converter on server startup.
+    # This setting will be auto disabled once the conversion is done.
+    Enabled: false
+    # A plugin to convert data from.
+    # Available options: PlayerPoints.
+    From: 'none'
   Points_Name: 'Game Points'
   Start_Balance: 0
   Balance_Top:

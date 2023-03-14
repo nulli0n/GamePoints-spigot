@@ -3,38 +3,38 @@ package su.nightexpress.gamepoints.data;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.data.AbstractUserDataHandler;
-import su.nexmedia.engine.api.data.DataTypes;
+import su.nexmedia.engine.api.data.sql.SQLColumn;
+import su.nexmedia.engine.api.data.sql.SQLValue;
+import su.nexmedia.engine.api.data.sql.column.ColumnType;
+import su.nexmedia.engine.api.data.sql.executor.SelectQueryExecutor;
 import su.nightexpress.gamepoints.GamePoints;
 
-import java.sql.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.function.Function;
 
 public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, PointUser> {
 
     private static PointsDataHandler instance;
 
-    private final Function<ResultSet, PointUser> FUNC_USER;
+    private final Function<ResultSet, PointUser> userFunction;
 
-    private static final String COL_BALANCE = "balance";
-    private static final String COL_PURCHASES = "purchases";
+    private static final SQLColumn COLUMN_BALANCE   = SQLColumn.of("balance", ColumnType.INTEGER);
+    private static final SQLColumn COLUMN_PURCHASES = SQLColumn.of("purchases", ColumnType.STRING);
 
     PointsDataHandler(@NotNull GamePoints plugin) {
         super(plugin, plugin);
 
-        this.FUNC_USER = (resultSet) -> {
+        this.userFunction = (resultSet) -> {
             try {
-                UUID uuid = UUID.fromString(resultSet.getString(COL_USER_UUID));
-                String name = resultSet.getString(COL_USER_NAME);
-                long dateCreated = resultSet.getLong(COL_USER_DATE_CREATED);
-                long lastOnline = resultSet.getLong(COL_USER_LAST_ONLINE);
+                UUID uuid = UUID.fromString(resultSet.getString(COLUMN_USER_ID.getName()));
+                String name = resultSet.getString(COLUMN_USER_NAME.getName());
+                long dateCreated = resultSet.getLong(COLUMN_USER_DATE_CREATED.getName());
+                long lastOnline = resultSet.getLong(COLUMN_USER_LAST_ONLINE.getName());
 
-                int balance = resultSet.getInt(COL_BALANCE);
-                Map<String, Map<String, Long>> items = gson.fromJson(resultSet.getString(COL_PURCHASES), new TypeToken<Map<String, Map<String, Long>>>() {}.getType());
+                int balance = resultSet.getInt(COLUMN_BALANCE.getName());
+                Map<String, Map<String, Long>> items = gson.fromJson(resultSet.getString(COLUMN_PURCHASES.getName()), new TypeToken<Map<String, Map<String, Long>>>() {}.getType());
 
                 return new PointUser(plugin, uuid, name, dateCreated, lastOnline, balance, items);
             }
@@ -45,11 +45,16 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
     }
 
     @NotNull
-    public static synchronized PointsDataHandler getInstance(@NotNull GamePoints plugin) throws SQLException {
+    public static PointsDataHandler getInstance(@NotNull GamePoints plugin) {
         if (instance == null) {
             instance = new PointsDataHandler(plugin);
         }
         return instance;
+    }
+
+    @Override
+    protected boolean useNewMethods() {
+        return true;
     }
 
     @Override
@@ -60,94 +65,83 @@ public class PointsDataHandler extends AbstractUserDataHandler<GamePoints, Point
 
     @Override
     public void onSynchronize() {
-        this.plugin.getUserManager().getUsersLoaded().forEach(user -> this.plugin.getData().updateUserBalance(user));
+        this.plugin.getUserManager().getUsersLoaded().forEach(this::updateUserBalance);
     }
 
     @Override
-    protected void onTableCreate() {
-        super.onTableCreate();
-        this.addColumn(this.tableUsers, "purchases", DataTypes.STRING.build(this.getDataType()));
+    protected boolean createUserTable() {
+        super.createUserTable();
+        this.dropColumn(this.tableUsers, SQLColumn.of("items", ColumnType.STRING));
+        return true;
     }
 
     public void updateUserBalance(@NotNull PointUser user) {
-        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
-            String sql = "SELECT `" + COL_BALANCE + "` FROM " + this.tableUsers + " WHERE `" + COL_USER_NAME + "` = ?";
-            try (
-                Connection connection = this.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, user.getName());
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    return resultSet.getInt(COL_BALANCE);
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        });
+        PointUser fromDb = this.getUser(user.getId());
+        if (fromDb == null) return;
 
-        future.thenAccept(balance -> {
-            if (balance >= 0) {
-                user.setBalanceRaw(balance);
-            }
-        });
-
-        /*try {
-            future.get();
-        }
-        catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }*/
+        user.setBalanceRaw(fromDb.getBalance());
     }
 
     @NotNull
     public Map<String, Integer> getUserBalance() {
         Map<String, Integer> map = new HashMap<>();
-        String sql = "SELECT `name`, `balance` FROM " + this.tableUsers;
 
-        try (
-            Connection connection = this.getConnection();
-            Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                String name = resultSet.getString(COL_USER_NAME);
-                int balance = resultSet.getInt(COL_BALANCE);
+        Function<ResultSet, Void> function = resultSet -> {
+            try {
+                String name = resultSet.getString(COLUMN_USER_NAME.getName());
+                int balance = resultSet.getInt(COLUMN_BALANCE.getName());
 
                 map.put(name, balance);
             }
-            return map;
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return map;
-        }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        };
+
+        SelectQueryExecutor.builder(this.tableUsers, function)
+            .columns(COLUMN_USER_NAME, COLUMN_BALANCE)
+            .execute(this.getConnector());
+        return map;
+    }
+
+    @Override
+    @NotNull
+    protected List<SQLColumn> getExtraColumns() {
+        return Arrays.asList(COLUMN_BALANCE, COLUMN_PURCHASES);
+    }
+
+    @Override
+    @NotNull
+    protected List<SQLValue> getSaveColumns(@NotNull PointUser user) {
+        return Arrays.asList(
+            COLUMN_BALANCE.toValue(user.getBalance()),
+            COLUMN_PURCHASES.toValue(this.gson.toJson(user.getPurchases()))
+        );
     }
 
     @Override
     @NotNull
     protected LinkedHashMap<String, String> getColumnsToCreate() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put(COL_PURCHASES, DataTypes.STRING.build(this.getDataType()));
-        map.put(COL_BALANCE, DataTypes.INTEGER.build(this.getDataType()));
-        return map;
+        //map.put(COL_PURCHASES, DataTypes.STRING.build(this.getDataType()));
+        //map.put(COL_BALANCE, DataTypes.INTEGER.build(this.getDataType()));
+        return new LinkedHashMap<>();
     }
 
     @Override
     @NotNull
     protected LinkedHashMap<String, String> getColumnsToSave(@NotNull PointUser user) {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put(COL_PURCHASES, this.gson.toJson(user.getPurchases()));
-        map.put(COL_BALANCE, String.valueOf(user.getBalance()));
-        if (this.hasColumn(this.tableUsers, "items")) {
-            map.put("items", "{}");
-        }
-        return map;
+        //map.put(COL_PURCHASES, this.gson.toJson(user.getPurchases()));
+        //map.put(COL_BALANCE, String.valueOf(user.getBalance()));
+        //if (this.hasColumn(this.tableUsers, "items")) {
+        //    map.put("items", "{}");
+        //}
+        return new LinkedHashMap<>();
     }
 
     @Override
     @NotNull
     protected Function<ResultSet, PointUser> getFunctionToUser() {
-        return this.FUNC_USER;
+        return this.userFunction;
     }
 }

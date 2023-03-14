@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nexmedia.engine.api.manager.ConfigHolder;
 import su.nexmedia.engine.api.manager.ICleanable;
 import su.nexmedia.engine.api.manager.IPlaceholder;
-import su.nexmedia.engine.api.menu.IMenu;
+import su.nexmedia.engine.api.menu.AbstractMenu;
 import su.nexmedia.engine.lang.LangManager;
 import su.nightexpress.gamepoints.GamePoints;
 import su.nightexpress.gamepoints.Perms;
@@ -79,5 +79,5 @@ public interface IPointStore extends ConfigHolder, IPlaceholder, ICleanable {
 
     boolean hasPermission(@NotNull Player player);
 
-    @NotNull IMenu getView();
+    @NotNull AbstractMenu<?> getView();
 }

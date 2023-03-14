@@ -3,9 +3,9 @@ package su.nightexpress.gamepoints.hook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import su.nexmedia.engine.api.hook.AbstractHook;
 import su.nexmedia.engine.utils.StringUtil;
 import su.nightexpress.gamepoints.GamePoints;
+import su.nightexpress.gamepoints.api.GamePointsAPI;
 import su.nightexpress.gamepoints.api.store.IPointProduct;
 import su.nightexpress.gamepoints.api.store.IPointStore;
 import su.nightexpress.gamepoints.data.PointUser;
@@ -15,50 +15,48 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class PlaceholderAPIHook extends AbstractHook<GamePoints> {
+public class PlaceholderAPIHook {
 
-    private PointsExpansion pointsExpansion;
+    private static PointsExpansion pointsExpansion;
 
-    public PlaceholderAPIHook(@NotNull GamePoints plugin, @NotNull String pluginName) {
-        super(plugin, pluginName);
-    }
-
-    @Override
-    public boolean setup() {
-        (this.pointsExpansion = new PointsExpansion()).register();
-        return true;
-    }
-
-    @Override
-    public void shutdown() {
-        if (this.pointsExpansion != null) {
-            this.pointsExpansion.unregister();
-            this.pointsExpansion = null;
+    public static void setup() {
+        if (pointsExpansion == null) {
+            pointsExpansion = new PointsExpansion();
+            pointsExpansion.register();
         }
     }
 
-    class PointsExpansion extends PlaceholderExpansion {
+    public static void shutdown() {
+        if (pointsExpansion != null) {
+            pointsExpansion.unregister();
+            pointsExpansion = null;
+        }
+    }
+
+    public static class PointsExpansion extends PlaceholderExpansion {
 
         @Override
         @NotNull
         public String getAuthor() {
-            return plugin.getAuthor();
+            return GamePointsAPI.PLUGIN.getDescription().getAuthors().get(0);
         }
 
         @Override
         @NotNull
         public String getIdentifier() {
-            return plugin.getNameRaw();
+            return "gamepoints";
         }
 
         @Override
         @NotNull
         public String getVersion() {
-            return plugin.getDescription().getVersion();
+            return GamePointsAPI.PLUGIN.getDescription().getVersion();
         }
 
         @Override
         public String onPlaceholderRequest(Player player, String holder) {
+            GamePoints plugin = GamePointsAPI.PLUGIN;
+
             if (holder.startsWith("item_rawprice")) {
                 String[] ss = this.getProductStoreIds("item_rawprice_", holder);
                 String storeId = ss[0];

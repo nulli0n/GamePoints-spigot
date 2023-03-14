@@ -26,7 +26,7 @@ public class StoreView extends AbstractMenu<GamePoints> {
         super(store.plugin(), store.getConfig(), path);
         this.store = store;
 
-        IMenuClick click = (player, type, e) -> {
+        MenuClick click = (player, type, e) -> {
             if (type instanceof MenuItemType type2) {
                 if (type2 == MenuItemType.RETURN) {
                     plugin.getStoreManager().getStoreMainMenu().open(player, 1);
@@ -36,17 +36,17 @@ public class StoreView extends AbstractMenu<GamePoints> {
         };
 
         for (String sId : cfg.getSection(path + "Content")) {
-            IMenuItem menuItem = cfg.getMenuItem(path + "Content." + sId, MenuItemType.class);
+            MenuItem menuItem = cfg.getMenuItem(path + "Content." + sId, MenuItemType.class);
 
             if (menuItem.getType() != null) {
-                menuItem.setClick(click);
+                menuItem.setClickHandler(click);
             }
             this.addItem(menuItem);
         }
     }
 
     @Override
-    public void onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
+    public boolean onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
         this.setPage(player, this.getPage(player), this.store.getPages());
 
         PointUser user = plugin.getUserManager().getUserData(player);
@@ -56,8 +56,8 @@ public class StoreView extends AbstractMenu<GamePoints> {
             ItemStack item = product.getPreview();
             this.replaceProduct(item, product, user);
 
-            IMenuItem menuItem = new MenuItem(item, product.getStoreSlot());
-            menuItem.setClick((player1, type, e) -> {
+            MenuItem menuItem = new MenuItem(item, product.getStoreSlot());
+            menuItem.setClickHandler((player1, type, e) -> {
                 ItemStack clicked = e.getCurrentItem();
                 if (clicked == null) return;
 
@@ -67,11 +67,7 @@ public class StoreView extends AbstractMenu<GamePoints> {
 
             this.addItem(player, menuItem);
         }
-    }
-
-    @Override
-    public void onReady(@NotNull Player player, @NotNull Inventory inventory) {
-
+        return true;
     }
 
     private void replaceProduct(@NotNull ItemStack item, @NotNull IPointProduct product, @NotNull PointUser user) {

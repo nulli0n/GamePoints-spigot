@@ -15,6 +15,7 @@ import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class PayCommand extends AbstractCommand<GamePoints> {
 
@@ -53,7 +54,7 @@ public class PayCommand extends AbstractCommand<GamePoints> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
         if (args.length != 3) {
             this.printUsage(sender);
             return;

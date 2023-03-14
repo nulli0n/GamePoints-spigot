@@ -35,7 +35,7 @@ public class StoreManager extends AbstractManager<GamePoints> {
 
     @Override
     protected void onLoad() {
-        this.plugin.getConfigManager().extract(DIR_STORES);
+        this.plugin.getConfigManager().extractResources(DIR_STORES);
         this.stores = new HashMap<>();
         this.balanceTop = new ArrayList<>();
 

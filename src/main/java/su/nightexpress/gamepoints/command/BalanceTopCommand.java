@@ -50,8 +50,8 @@ public class BalanceTopCommand extends AbstractCommand<GamePoints> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
-        int page = args.length == 1 ? StringUtil.getInteger(args[0], 1) - 1 : 0;
+    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
+        int page = args.length >= 2 ? StringUtil.getInteger(args[1], 1) - 1 : 0;
 
         List<List<Map.Entry<String, Integer>>> total = CollectionsUtil.split(plugin.getStoreManager().getBalanceTop(), 10);
         int pages = total.size();

@@ -3,13 +3,12 @@ package su.nightexpress.gamepoints.store.menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.menu.AbstractMenu;
-import su.nexmedia.engine.api.menu.IMenuClick;
-import su.nexmedia.engine.api.menu.IMenuItem;
+import su.nexmedia.engine.api.menu.MenuClick;
+import su.nexmedia.engine.api.menu.MenuItem;
 import su.nexmedia.engine.api.menu.MenuItemType;
 import su.nexmedia.engine.utils.ItemUtil;
 import su.nightexpress.gamepoints.GamePoints;
@@ -30,7 +29,7 @@ public class StoreMenuConfirmation extends AbstractMenu<GamePoints> {
         this.productSlot = cfg.getInt("Product_Slot");
         this.productMap = new WeakHashMap<>();
 
-        IMenuClick click = (player, type, e) -> {
+        MenuClick click = (player, type, e) -> {
             if (type instanceof MenuItemType type2) {
                 IPointProduct product = this.productMap.remove(player);
                 if (product == null) {
@@ -50,10 +49,10 @@ public class StoreMenuConfirmation extends AbstractMenu<GamePoints> {
         };
 
         for (String sId : cfg.getSection("Content")) {
-            IMenuItem menuItem = cfg.getMenuItem("Content." + sId, MenuItemType.class);
+            MenuItem menuItem = cfg.getMenuItem("Content." + sId, MenuItemType.class);
 
             if (menuItem.getType() != null) {
-                menuItem.setClick(click);
+                menuItem.setClickHandler(click);
             }
             this.addItem(menuItem);
         }
@@ -66,17 +65,7 @@ public class StoreMenuConfirmation extends AbstractMenu<GamePoints> {
     }
 
     @Override
-    public void onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
-
-    }
-
-    @Override
-    public void onReady(@NotNull Player player, @NotNull Inventory inventory) {
-
-    }
-
-    @Override
-    public void onItemPrepare(@NotNull Player player, @NotNull IMenuItem menuItem, @NotNull ItemStack item) {
+    public void onItemPrepare(@NotNull Player player, @NotNull MenuItem menuItem, @NotNull ItemStack item) {
         super.onItemPrepare(player, menuItem, item);
 
         PointUser user = plugin.getUserManager().getUserData(player);

@@ -17,8 +17,6 @@ import su.nightexpress.gamepoints.hook.PlaceholderAPIHook;
 import su.nightexpress.gamepoints.lang.Lang;
 import su.nightexpress.gamepoints.store.StoreManager;
 
-import java.sql.SQLException;
-
 public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<GamePoints, PointUser> {
 
     private StoreManager      storeManager;
@@ -50,6 +48,9 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
 
     @Override
     public void disable() {
+        if (Hooks.hasPlaceholderAPI()) {
+            PlaceholderAPIHook.shutdown();
+        }
         if (this.storeManager != null) {
             this.storeManager.shutdown();
             this.storeManager = null;
@@ -58,14 +59,8 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
 
     @Override
     public boolean setupDataHandlers() {
-        try {
-            this.pointsDataHandler = PointsDataHandler.getInstance(this);
-            this.pointsDataHandler.setup();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        this.pointsDataHandler = PointsDataHandler.getInstance(this);
+        this.pointsDataHandler.setup();
 
         this.pointsUserManager = new PointsUserManager(this);
         this.pointsUserManager.setup();
@@ -100,7 +95,7 @@ public class GamePoints extends NexPlugin<GamePoints> implements UserDataHolder<
     @Override
     public void registerHooks() {
         if (Hooks.hasPlaceholderAPI()) {
-            this.registerHook(Hooks.PLACEHOLDER_API, PlaceholderAPIHook.class);
+            PlaceholderAPIHook.setup();
         }
     }
 

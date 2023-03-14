@@ -2,12 +2,10 @@ package su.nightexpress.gamepoints.store.menu;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nexmedia.engine.api.config.JYML;
 import su.nexmedia.engine.api.menu.AbstractMenu;
-import su.nexmedia.engine.api.menu.IMenuItem;
 import su.nexmedia.engine.api.menu.MenuItem;
 import su.nexmedia.engine.api.menu.MenuItemType;
 import su.nexmedia.engine.utils.ItemUtil;
@@ -40,7 +38,7 @@ public class StoreMenuMain extends AbstractMenu<GamePoints> {
             }
 
             MenuItem menuItem = cfg.getMenuItem("Stores." + sId);
-            menuItem.setClick((p, type, e) -> store.open(p));
+            menuItem.setClickHandler((p, type, e) -> store.open(p));
 
             this.addItem(menuItem);
         }
@@ -53,17 +51,7 @@ public class StoreMenuMain extends AbstractMenu<GamePoints> {
     }
 
     @Override
-    public void onPrepare(@NotNull Player player, @NotNull Inventory inventory) {
-
-    }
-
-    @Override
-    public void onReady(@NotNull Player player, @NotNull Inventory inventory) {
-
-    }
-
-    @Override
-    public void onItemPrepare(@NotNull Player player, @NotNull IMenuItem menuItem, @NotNull ItemStack item) {
+    public void onItemPrepare(@NotNull Player player, @NotNull MenuItem menuItem, @NotNull ItemStack item) {
         super.onItemPrepare(player, menuItem, item);
 
         IPointStore store = plugin.getStoreManager().getStore(menuItem.getId());

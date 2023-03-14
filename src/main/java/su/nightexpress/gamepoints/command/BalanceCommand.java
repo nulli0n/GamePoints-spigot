@@ -12,6 +12,7 @@ import su.nightexpress.gamepoints.data.PointUser;
 import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
+import java.util.Map;
 
 public class BalanceCommand extends AbstractCommand<GamePoints> {
 
@@ -46,7 +47,7 @@ public class BalanceCommand extends AbstractCommand<GamePoints> {
     }
 
     @Override
-    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
+    public void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
         if ((args.length < 2 && !(sender instanceof Player)) || args.length > 2) {
             this.printUsage(sender);
             return;

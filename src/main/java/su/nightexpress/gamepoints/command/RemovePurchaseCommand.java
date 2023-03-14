@@ -13,6 +13,7 @@ import su.nightexpress.gamepoints.data.PointUser;
 import su.nightexpress.gamepoints.lang.Lang;
 
 import java.util.List;
+import java.util.Map;
 
 public class RemovePurchaseCommand extends AbstractCommand<GamePoints> {
 
@@ -54,7 +55,7 @@ public class RemovePurchaseCommand extends AbstractCommand<GamePoints> {
     }
 
     @Override
-    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
+    protected void onExecute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, @NotNull Map<String, String> flags) {
         if (args.length != 4) {
             this.printUsage(sender);
             return;
